@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
+import { ChartBarBigIcon, ChartColumnBigIcon, Weight } from "lucide-react";
+import  Link  from "next/link";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignOutButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs'
+import { dark, neobrutalism } from '@clerk/themes'
+import { Button } from "@/components/ui/button";
+import UserDropdown from "@/components/ui/userDropdown";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], 
+  variable: "--font-poppins",
   subsets: ["latin"],
 });
 
@@ -23,12 +33,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${poppins.variable} antialiased`}>
+        <nav className="bg-primary p-4 text-white h-20 flex items-center justify-between">
+          <Link href="/" className="font-bold text-2xl flex gap-1 items-center">
+            <ChartColumnBigIcon className="text-lime-500"/> NextCash
+          </Link>
+          <div className="flex items-center">
+            <SignedOut>
+              <Button asChild variant="link" className="text-white">
+                <SignInButton/>
+              </Button>
+              <Button asChild variant="link" className="text-white">
+                <SignUpButton/>
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <UserDropdown/>
+            </SignedIn>
+          </div>
+        </nav>
         {children}
       </body>
     </html>
+    </ClerkProvider>
   );
 }
